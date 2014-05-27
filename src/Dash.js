@@ -76,16 +76,28 @@
 
 	/*** Static Methods for test suite and test case ***/
 
-	Dash.Suite = function () {
+	Dash.Suite = function (suiteName, cases) {
 		if ( !(this instanceof Dash.Suite) ) {
-			return new Dash.Suite();
+			return new Dash.Suite(suiteName, cases);
 		}
 
-		this.cases = [];
+		// TODO: integrate a way of using this suite name
+		this.suiteName = suiteName;
+
+		if (cases !== undefined ) {
+			this.cases = cases;
+		} else {
+			this.cases = [];
+		}
 	};
 
 	Dash.Suite.prototype.add = function ( testCase ) {
-		this.cases.push( testCase );
+		// If we have an array, push its elements at the end of the existing array
+		if ( Helpers.typeOf(testCase) == "array" ) {
+			this.cases.push.apply(this.cases, testCase);
+		} else {
+			this.cases.push( testCase );
+		}
 	};
 
 	Dash.Suite.prototype.run = function () {
@@ -781,7 +793,6 @@
 
 
 	/*** Helper Methods Begin  ***/
-
 	var Helpers = {
 		/**  This Douglas Crockfoard's work - no lincese information found - hope it is okay to be used here **/
 		typeOf : function ( value ) {
